@@ -15,6 +15,7 @@ const int BREAK_SESSION_SECONDS = 0;
 String titleText = "";
 int minutes = FOCUS_SESSION_MINUTES;
 int seconds = FOCUS_SESSION_SECONDS;
+unsigned long previousMillis = 0;
 
 enum Mode {
   FOCUS,
@@ -25,7 +26,8 @@ Mode currentMode = FOCUS;
 
 void setup() {
   lcd.begin(16, 2);
-  changeMode(FOCUS);   
+  changeMode(FOCUS);
+  
 }
 
 void loop() {
@@ -41,19 +43,22 @@ void loop() {
 }
 
 void timer() {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis > 1000) {
+    seconds--;
+    if (seconds < 0) {
+      minutes--;
+      seconds = 59;
+    }
+
+    previousMillis = currentMillis;
+  }
+
   char timeText[6];
   sprintf(timeText, "%02d:%02d", minutes, seconds);
 
   lcd.setCursor(0, 1);
   lcd.print(timeText);
-
-  seconds--;
-  if (seconds < 0) {
-    minutes--;
-    seconds = 59;
-  }
-
-  delay(1000);
 }
 
 void changeMode(Mode mode) {
