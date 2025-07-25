@@ -5,14 +5,14 @@ const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 // App configuration
-const int FOCUS_SESSION_MINUTES = 0;
-const int FOCUS_SESSION_SECONDS = 5;
+const int FOCUS_SESSION_MINUTES = 25;
+const int FOCUS_SESSION_SECONDS = 0;
 
-const int BREAK_SESSION_MINUTES = 0;
-const int BREAK_SESSION_SECONDS = 5;
+const int BREAK_SESSION_MINUTES = 5;
+const int BREAK_SESSION_SECONDS = 0;
 
-const int LONG_BREAK_SESSION_MINUTES = 0;
-const int LONG_BREAK_SESSION_SECONDS = 20;
+const int LONG_BREAK_SESSION_MINUTES = 15;
+const int LONG_BREAK_SESSION_SECONDS = 0;
 
 const int LONG_BREAK_INTERVAL = 4;
 int pomodoroCount = 0;
@@ -34,7 +34,6 @@ Mode currentMode = FOCUS;
 void setup() {
   lcd.begin(16, 2);
   changeMode(FOCUS);
-
 }
 
 void loop() {
@@ -74,7 +73,7 @@ void timer() {
   char timeText[6];
   sprintf(timeText, "%02d:%02d", minutes, seconds);
 
-  lcd.setCursor(0, 1);
+  lcd.setCursor(5, 1);
   lcd.print(timeText);
 }
 
