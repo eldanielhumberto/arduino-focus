@@ -1,11 +1,11 @@
 # 🍎 Pomodoro Timer for Arduino with LCD
-This Arduino project implements a simple Pomodoro timer with two modes: Focus and Break. It uses a 16x2 LCD display to show the current mode and the remaining time for each session. The timer alternates between a 25-minute focus session and a 5-minute break session.
+This Arduino project implements a simple Pomodoro timer with three modes: Focus, Break and Long break. It uses a 16x2 LCD display to show the current mode and the remaining time for each session. The timer alternates between a 25-minute focus session, a 5-minute break session and a 15-minute long break session.
 
 ## Features
-- Displays the current mode ("Focus mode" or "Break mode") on the LCD's first row.
+- Displays the current mode ("Focus mode", "Break mode", "Long break mode") on the LCD's first row.
 - Shows a countdown timer in the format MM:SS on the LCD's second row.
-- Automatically switches between Focus (25 minutes) and Break (5 minutes) modes when the timer reaches zero.
-Uses an enum to manage modes, ensuring efficient memory usage and clear code.
+- Automatically switches between Focus (25 minutes), Break (5 minutes) and Long break (15 minutes) modes when the timer reaches zero.
+- Uses an enum to manage modes, ensuring efficient memory usage and clear code.
 
 ## Hardware Requirements
 - Arduino board (e.g., Arduino Uno)
@@ -29,18 +29,22 @@ Uses an enum to manage modes, ensuring efficient memory usage and clear code.
 1. Connect the LCD to the Arduino as described in the hardware requirements.
 2. Open the Arduino IDE and install the LiquidCrystal library if not already present.
 3. Copy the provided code into a new Arduino sketch.
-Upload the sketch to your Arduino board.
+4. Upload the sketch to your Arduino board.
 
 ## Code Overview
 
 - **LCD Setup**: Initializes a 16x2 LCD using the LiquidCrystal library with the specified pin configuration.
 
-- **Modes**: Uses an `enum Mode { FOCUS, BREAK }` to manage the application state.
+- **Modes**: Uses an `enum Mode { FOCUS, BREAK, LONG_BREAK }` to manage the application state.
 
 - **Timer Configuration**:
     - **Focus session**: 25 minutes (configurable via `FOCUS_SESSION_MINUTES` and `FOCUS_SESSION_SECONDS`).
 
     - **Break session**: 5 minutes (configurable via `BREAK_SESSION_MINUTES` and `BREAK_SESSION_SECONDS`).
+
+    - **Long break session**: 15 minutes (configurable via `LONG_BREAK_SESSION_MINUTES` and `LONG_BREAK_SESSION_SECONDS`)
+
+    - **Pomodoro interval for taking a break**: 4 pomodoros (configurable via `LONG_BREAK_INTERVAL`)
 
 - **Functions**:
     - `setup()`: Initializes the LCD and sets the initial mode to FOCUS.
@@ -51,6 +55,8 @@ Upload the sketch to your Arduino board.
 
     - `changeMode(Mode mode)`: Updates the mode, resets the timer, and displays the mode title on the LCD.
 
+    - `showPomodorosCount()`: Shows the number of pomodoros you have completed and those remaining before a long break.
+
 ## Usage
 
 1. Power on the Arduino with the LCD connected.
@@ -60,7 +66,9 @@ Upload the sketch to your Arduino board.
 
 ## Customization
 
-- Adjust `FOCUS_SESSION_MINUTES` and `BREAK_SESSION_MINUTES` to change the duration of each session.
+- Adjust `FOCUS_SESSION_MINUTES`, `BREAK_SESSION_MINUTES` and `LONG_BREAK_SESSION_MINUTES` to change the duration of each session.
+
+- Adjust `LONG_BREAK_INTERVAL` to change the number of pomodoros that must be completed in order to take a long break.
 
 - Modify `titleText` in the `changeMode` function to customize the displayed mode names.
 
