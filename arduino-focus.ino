@@ -1,14 +1,16 @@
 #include <LiquidCrystal.h>
 
-// LCD variables
+// Pines
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+const int buzzerPin = 9;
 
 // App configuration
 const int FOCUS_SESSION_MINUTES = 25;
 const int FOCUS_SESSION_SECONDS = 0;
 
-const int BREAK_SESSION_MINUTES = 5;
+const int BREAK_SESSION_MINUTES = 25;
 const int BREAK_SESSION_SECONDS = 0;
 
 const int LONG_BREAK_SESSION_MINUTES = 15;
@@ -21,7 +23,6 @@ int pomodoroCount = 0;
 String titleText = "";
 int minutes = FOCUS_SESSION_MINUTES;
 int seconds = FOCUS_SESSION_SECONDS;
-unsigned long previousMillis = 0;
 
 enum Mode {
   FOCUS,
@@ -31,16 +32,25 @@ enum Mode {
 
 Mode currentMode = FOCUS;
 
+unsigned long previousMillisTimer = 0;
+
 void setup() {
   lcd.begin(16, 2);
   changeMode(FOCUS);
 }
 
-void loop() {
+void loop() { 
   timer();
   showPomodorosCount();
 
   if (minutes == 0 && seconds == 0) {
+    // Play tone
+    tone(buzzerPin, 523);
+
+    delay(1000);
+    noTone(buzzerPin);
+
+    // Change timer mode 
     if (currentMode == FOCUS) {
       pomodoroCount++;
 
@@ -59,15 +69,14 @@ void loop() {
 }
 
 void timer() {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis > 1000) {
+  if (millis() - previousMillisTimer > 1000) {
     seconds--;
     if (seconds < 0) {
       minutes--;
       seconds = 59;
     }
 
-    previousMillis = currentMillis;
+    previousMillisTimer = millis();
   }
 
   char timeText[6];
