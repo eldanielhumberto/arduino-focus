@@ -1,84 +1,137 @@
-# 🍎 Pomodoro Timer for Arduino with LCD
-This Arduino project implements a simple Pomodoro timer with three modes: Focus, Break and Long break. It uses a 16x2 LCD display to show the current mode and the remaining time for each session. The timer alternates between a 25-minute focus session, a 5-minute break session and a 15-minute long break session.
+# 🍅 Arduino Pomodoro Timer ⏰
 
-## Features
-- Displays the current mode ("Focus mode", "Break mode", "Long break mode") on the LCD's first row.
-- Shows a countdown timer in the format MM:SS on the LCD's second row.
-- Automatically switches between Focus (25 minutes), Break (5 minutes) and Long break (15 minutes) modes when the timer reaches zero.
-- Uses an enum to manage modes, ensuring efficient memory usage and clear code.
+A simple and efficient Arduino Pomodoro Timer that cycles through **Focus** (25 min), **Break** (5 min), and **Long Break** (15 min) sessions. It uses a 16x2 LCD to display the current mode and remaining time, and a piezoelectric buzzer to notify mode changes with distinct tones (523 Hz, 659 Hz, 784 Hz). Perfect for boosting productivity with the Pomodoro Technique. 🚀
 
-## Hardware Requirements
-- Arduino board (e.g., Arduino Uno)
-- 16x2 LCD display compatible with the LiquidCrystal library
-- Wiring:
-    - LCD RS pin to Arduino digital pin 12
-    - LCD Enable pin to Arduino digital pin 11
-    - LCD D4 pin to Arduino digital pin 5
-    - LCD D5 pin to Arduino digital pin 4
-    - LCD D6 pin to Arduino digital pin 3
-    - LCD D7 pin to Arduino digital pin 2
-- Appropriate resistors and power connections for the LCD
+## ✨ Features
 
-## Software Requirements
+- **Pomodoro Modes**: Focus (25 min), Break (5 min), Long Break (15 min, after 4 Pomodoros). 🔄
+- **LCD Display**: Shows the mode (`lcdModeTitle`) and time remaining (MM:SS). 📟
+- **Audio Notifications**: 800 ms tones with unique frequencies (C5: 523 Hz, E5: 659 Hz, G5: 784 Hz). 🎵
+- **Non-blocking Timing**: Uses `millis()` for smooth operation. ⏱️
+- **Pomodoro Counter**: Displays completed sessions on the LCD (e.g., "2/4"). 📊
+- **Modular Code**: Organized with clear functions (`updateTimer`, `updateBuzzer`, `showPomodorosCount`, `changeMode`). 🛠️
 
-- Arduino IDE
-- LiquidCrystal library (included with the Arduino IDE)
+## 🛠️ Requirements
 
-## Installation
+### Hardware
 
-1. Connect the LCD to the Arduino as described in the hardware requirements.
-2. Open the Arduino IDE and install the LiquidCrystal library if not already present.
-3. Copy the provided code into a new Arduino sketch.
-4. Upload the sketch to your Arduino board.
+- **Arduino Board** (e.g., Arduino Uno) 🖥️
+- **16x2 LCD** with parallel interface (compatible with LiquidCrystal) 📺
+- **Piezoelectric Buzzer** connected to pin 9 🔊
+- Wires and breadboard for connections 🔌
 
-## Code Overview
+### Software
 
-- **LCD Setup**: Initializes a 16x2 LCD using the LiquidCrystal library with the specified pin configuration.
+- **Arduino IDE** (version 2.0 or higher recommended) 💻
+- **LiquidCrystal Library** (included with Arduino IDE) 📚
 
-- **Modes**: Uses an `enum Mode { FOCUS, BREAK, LONG_BREAK }` to manage the application state.
+## 🔌 Hardware Setup
 
-- **Timer Configuration**:
-    - **Focus session**: 25 minutes (configurable via `FOCUS_SESSION_MINUTES` and `FOCUS_SESSION_SECONDS`).
+1. **Connect LCD**:
 
-    - **Break session**: 5 minutes (configurable via `BREAK_SESSION_MINUTES` and `BREAK_SESSION_SECONDS`).
+   - `rs` → Pin 12 (Register Select)
+   - `en` → Pin 11 (Enable)
+   - `d4` → Pin 5, `d5` → Pin 4, `d6` → Pin 3, `d7` → Pin 2
+   - `VSS` → GND, `VDD` → 5V, connect a potentiometer to `V0` for contrast adjustment
 
-    - **Long break session**: 15 minutes (configurable via `LONG_BREAK_SESSION_MINUTES` and `LONG_BREAK_SESSION_SECONDS`)
+2. **Connect Buzzer**:
 
-    - **Pomodoro interval for taking a break**: 4 pomodoros (configurable via `LONG_BREAK_INTERVAL`)
+   - Positive terminal → Pin 9 (`buzzerPin`), negative terminal → GND
+
+3. **Verify Connections**:
+   - Ensure the buzzer supports the frequencies (523 Hz, 659 Hz, 784 Hz).
+
+## 📦 Installation
+
+1. **Download the Code**:
+
+   - Copy `pomodoro_timer.ino` to the Arduino IDE.
+
+2. **Install LiquidCrystal Library**:
+
+   - In the Arduino IDE, go to `Tools > Manage Libraries` and search for `LiquidCrystal`.
+
+3. **Upload the Code**:
+   - Connect your Arduino to the computer, select the board and port, and upload the code.
+
+## 🚀 Usage
+
+1. **Start**:
+
+   - On power-up, the timer starts in **Focus** mode (25 minutes), displaying "Focus" on the first LCD line and the remaining time (MM:SS) on the second. 🧠
+
+2. **Pomodoro Cycle**:
+
+   - **Focus**: 25 minutes (`FOCUS_SESSION_MINUTES`), C5 tone (659 Hz).
+   - **Break**: 5 minutes (`BREAK_SESSION_MINUTES`), E5 tone (523 Hz).
+   - **Long Break**: 15 minutes (`LONG_BREAK_SESSION_MINUTES`), G5 tone (784 Hz), after 4 Pomodoros (`LONG_BREAK_INTERVAL`).
+   - Mode changes trigger an 800 ms tone (`BUZZER_TONE_DURATION_MS`). 🎶
+
+3. **Pomodoro Counter**:
+
+   - The top-right corner of the LCD shows completed Pomodoros (`pomodoroCount`, e.g., "2/4").
+
+4. **Customization**:
+   - Adjust timings in the code:
+     ```cpp
+     const int FOCUS_SESSION_MINUTES = 25;
+     const int BREAK_SESSION_MINUTES = 5;
+     const int LONG_BREAK_SESSION_MINUTES = 15;
+     ```
+   - Modify frequencies in `changeMode` (e.g., `buzzerFrecuency = 523` for Focus).
+
+## 📝 Code Structure
+
+- **Constants**:
+
+  - `rs`, `en`, `d4`, `d5`, `d6`, `d7`: LCD pins.
+  - `buzzerPin`: Pin 9 for the buzzer.
+  - `FOCUS_SESSION_MINUTES`, `BREAK_SESSION_MINUTES`, `LONG_BREAK_SESSION_MINUTES`: Mode durations.
+  - `LONG_BREAK_INTERVAL`: 4 Pomodoros for a Long Break.
+  - `TIMER_INTERVAL_MS`: 1000 ms (timer interval).
+  - `BUZZER_TONE_DURATION_MS`: 800 ms (tone duration).
+
+- **Variables**:
+
+  - `lcdModeTitle`: Mode title displayed on the LCD (e.g., "Focus").
+  - `timerMinutes`, `timerSeconds`: Remaining time.
+  - `isBuzzerActive`: Indicates if the buzzer is active.
+  - `buzzerFrecuency`: Tone frequency (523 Hz, 659 Hz, 784 Hz).
+  - `pomodoroCount`: Count of completed Focus sessions.
+  - `previousTimerMillis`, `previousBuzzerMillis`: Previous times for `millis()`.
+  - `currentMode`: Current mode (`FOCUS`, `BREAK`, `LONG_BREAK`).
 
 - **Functions**:
-    - `setup()`: Initializes the LCD and sets the initial mode to FOCUS.
-    
-    - `loop()`: Runs the timer and switches modes when the timer reaches zero.
+  - `setup()`: Initializes the LCD and starts in Focus mode.
+  - `loop()`: Manages the timer, buzzer, and counter.
+  - `updateTimer()`: Updates `timerMinutes` and `timerSeconds` every `TIMER_INTERVAL_MS`.
+  - `updateBuzzer()`: Controls the buzzer based on `isBuzzerActive` and `buzzerFrecuency`.
+  - `showPomodorosCount()`: Displays `pomodoroCount` on the LCD.
+  - `changeMode()`: Switches modes, updates `lcdModeTitle`, timings, and frequency.
 
-    - `timer()`: Updates the countdown timer every second and displays the time on the LCD.
+## 🌟 Future Improvements
 
-    - `changeMode(Mode mode)`: Updates the mode, resets the timer, and displays the mode title on the LCD.
+- **Buttons**: Add buttons to pause, reset, or switch modes manually. 🖱️
+- **Sound Patterns**: Implement pulses or melodies for buzzer tones (e.g., short pulses for Break). 🎶
+- **EEPROM**: Store `pomodoroCount` for persistence across resets. 💾
+- **Serial Communication**: Send timer status to a computer or app via Serial. 📡
+- **Additional Modes**: Add a pause mode or dynamic time configuration.
 
-    - `showPomodorosCount()`: Shows the number of pomodoros you have completed and those remaining before a long break.
+## 🤝 Contributing
 
-## Usage
+1. Fork the repository.
+2. Create a branch (`git checkout -b feature/new-feature`).
+3. Commit changes (`git commit -m "Add new feature"`).
+4. Submit a pull request with a clear description.
 
-1. Power on the Arduino with the LCD connected.
-2. The LCD will display "Focus mode" and start a 25-minute countdown.
-3. When the focus session ends, it automatically switches to "Break mode" for 5 minutes.
-4. The cycle repeats indefinitely, alternating between Focus and Break modes.
+## 📜 License
 
-## Customization
+MIT License. Use, modify, and share freely! 📄
 
-- Adjust `FOCUS_SESSION_MINUTES`, `BREAK_SESSION_MINUTES` and `LONG_BREAK_SESSION_MINUTES` to change the duration of each session.
+## 🙌 Acknowledgments
 
-- Adjust `LONG_BREAK_INTERVAL` to change the number of pomodoros that must be completed in order to take a long break.
+- To you, for using this timer to enhance your productivity! 💪
 
-- Modify `titleText` in the `changeMode` function to customize the displayed mode names.
+---
 
-- Add buttons or other inputs to manually switch modes by calling `changeMode(FOCUS)` or `changeMode(BREAK)`.
-
-## Notes
-
-- Ensure the LCD contrast is properly adjusted for visibility (may require a potentiometer).
-
-- The code is designed to be memory-efficient, using an `enum` instead of strings for mode management.
-
-## License
-This project is open-source and available under the MIT License.
+**Boost Your Productivity with Pomodoro!** 🍅⏰
